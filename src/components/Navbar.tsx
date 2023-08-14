@@ -1,21 +1,7 @@
-import { NavLink, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import { NavItem } from "./ui";
 
 const Navbar = () => {
-  const items = [
-    {
-      level: "All Books",
-      path: "/all_books",
-    },
-    {
-      level: "Sign In",
-      path: "/sign_in",
-    },
-    {
-      level: "Sign Up",
-      path: "/sign_up",
-    },
-  ];
-
   return (
     <div className="flex flex-row items-center justify-between my-2 px-2 bg-gray-800">
       <Link
@@ -25,15 +11,10 @@ const Navbar = () => {
         Quantum Saga
       </Link>
       <ul className="flex flex-row gap-6">
-        {items.map((item) => (
-          <NavLink
-            className="px-2 py-1 font-medium rounded-sm text-white cursor-pointer"
-            to={item.path}
-            key={item.path}
-          >
-            {item.level}
-          </NavLink>
-        ))}
+        <NavItem lebel="All Books" to="/all_books" />
+        <NavItem lebel="Sign In" to="/sign_in" />
+        <NavItem lebel="Sign Up" to="/sign_up" />
+        <NavItem lebel="Logout" to="/" />
       </ul>
     </div>
   );
