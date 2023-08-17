@@ -6,6 +6,8 @@ import format_date from "../utils/format_date";
 const Home = () => {
   const { data: books, isLoading } = useGetBooksQuery(undefined);
 
+  console.log(books);
+
   if (isLoading) return <div>Loading</div>;
 
   return (
@@ -17,6 +19,7 @@ const Home = () => {
           genre={book.genre}
           author={book.author}
           publication_date={format_date(book.publication_date)}
+          _id={book._id}
         />
       ))}
     </div>
