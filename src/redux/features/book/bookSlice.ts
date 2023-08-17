@@ -1,3 +1,11 @@
-const bookSlice = () => {};
+// import { createSlice } from "@reduxjs/toolkit";
 
-export default bookSlice;
+// const initialState = {
+//   por,
+// };
+
+// const bookSlice = createSlice({
+//   name: "book",
+// });
+
+// export default bookSlice;
