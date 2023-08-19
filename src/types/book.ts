@@ -1,5 +1,5 @@
 type IBook = {
-  _id: string;
+  id: string;
   title: string;
   genre: string;
   author: string;

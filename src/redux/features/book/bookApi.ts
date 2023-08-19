@@ -33,8 +33,8 @@ const bookApi = api.injectEndpoints({
 });
 
 export const {
-  useGetBookQuery,
   useGetBooksQuery,
+  useGetBookQuery,
   useCreateBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,

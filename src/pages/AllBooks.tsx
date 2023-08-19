@@ -10,7 +10,7 @@ const AllBooks = () => {
 
   return (
     <div className="flex flex-row flex-wrap gap-6 items-start ml-4">
-      {books.data.map((book: IBook, i: number) => (
+      {books?.data?.map((book: IBook, i: number) => (
         <Card
           key={i}
           title={book.title}
