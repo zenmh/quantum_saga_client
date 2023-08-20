@@ -1,8 +1,13 @@
 import { FormEvent } from "react";
 import { useState } from "react";
 import { Inp } from "../components/ui";
+import { useAppDispatch } from "../redux/hook";
+import { loginUser } from "../redux/features/user/userSlice";
+import { toast } from "react-toastify";
 
 const SignIn = () => {
+  const dispatch = useAppDispatch();
+
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const handleSignin = (e: FormEvent<HTMLFormElement>) => {
@@ -10,10 +15,21 @@ const SignIn = () => {
     setIsLoading(true);
 
     const form_data = new FormData(e.currentTarget);
-    const email = form_data.get("email");
-    const password = form_data.get("password");
+    const email = form_data.get("email") as string;
+    const password = form_data.get("password") as string;
 
-    console.log("hlw", email, password);
+    dispatch(loginUser({ email, password }));
+
+    toast.info("Logged in successfully !", {
+      position: "bottom-left",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "dark",
+    });
 
     setIsLoading(false);
   };
@@ -37,7 +53,7 @@ const SignIn = () => {
           type="submit"
           value="Sign In"
           disabled={isLoading}
-          className="w-full p-3 text-xl bg-sky-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
+          className="w-full p-3 text-xl bg-sky-800 border-sky-800 rounded-md cursor-pointer outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
         />
       </form>
     </div>
