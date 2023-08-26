@@ -5,6 +5,7 @@ import {
   signInWithEmailAndPassword,
 } from "firebase/auth";
 import auth from "../../../utils/firebase";
+import { toast } from "react-toastify";
 
 interface IInitialState {
   user: { email: string | null };
@@ -27,14 +28,20 @@ const initialState: IInitialState = {
 
 export const createUser = createAsyncThunk(
   "user/createUser",
-  async ({ email, password }: IUser) =>
-    (await createUserWithEmailAndPassword(auth, email, password)).user.email
+  async ({ email, password }: IUser) => {
+    const data = await createUserWithEmailAndPassword(auth, email, password);
+
+    return data.user.email;
+  }
 );
 
 export const loginUser = createAsyncThunk(
   "user/loginUser",
-  async ({ email, password }: IUser) =>
-    (await signInWithEmailAndPassword(auth, email, password)).user.email
+  async ({ email, password }: IUser) => {
+    const data = await signInWithEmailAndPassword(auth, email, password);
+
+    return data.user.email;
+  }
 );
 
 const userSlice = createSlice({
@@ -58,6 +65,16 @@ const userSlice = createSlice({
       .addCase(createUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user.email = action.payload;
+        toast.info("Sign Up Successfully !", {
+          position: "bottom-left",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       })
       .addCase(createUser.rejected, (state, action) => {
         state.isError = true;
@@ -73,6 +90,17 @@ const userSlice = createSlice({
       .addCase(loginUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user.email = action.payload;
+
+        toast.info("Sign In Successfully !", {
+          position: "bottom-left",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isError = true;
