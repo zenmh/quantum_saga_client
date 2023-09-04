@@ -1,6 +1,21 @@
-import { useState } from "react";
-import { Inp } from "../components/ui";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useAppSelector } from "../redux/hook";
+import { useCreateBookMutation } from "../redux/features/book/bookApi";
+import { Spinner } from "../components/ui";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+interface BookProps {
+  title: string;
+  author: string;
+  genre: string;
+  email: string;
+  publication_date?: string;
+  reviews?: {
+    email: string;
+    comment: string;
+  }[];
+}
 
 const genres: string[] = [
   "Select Genre",
@@ -25,56 +40,66 @@ const genres: string[] = [
   "Travel",
 ];
 
-type Inputs = {
-  title: string;
-  author: string;
-  genre: string;
-  publication_date?: string;
-  email: string;
-  reviews?: {
-    email: string;
-    comment: string;
-  }[];
-};
-
 const AddNewBook = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
+  const [createBook, { isLoading, isSuccess }] = useCreateBookMutation();
+  const { user } = useAppSelector((state) => state.user);
   const {
     register,
     handleSubmit,
-
     formState: { errors },
-  } = useForm<Inputs>();
+  } = useForm<BookProps>();
+  const navigate = useNavigate();
 
-  const formHandler: SubmitHandler<Inputs> = (data) => {
-    setIsLoading(true);
+  const onSubmit: SubmitHandler<BookProps> = (data: BookProps) => {
+    const book = {
+      title: data.title,
+      author: data.author,
+      genre: data.genre,
+      email: data.email,
+      publication_date: new Date().toISOString(),
+      reviews: [],
+    };
 
-    console.log(data);
+    createBook(book);
 
-    setIsLoading(false);
+    if (isSuccess) {
+      toast.success("Book Created Successfully !", {
+        position: "bottom-left",
+        autoClose: 1000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        progress: undefined,
+        theme: "dark",
+      });
+
+      navigate("/");
+    }
   };
+
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="flex flex-row justify-center">
       <form
-        onSubmit={handleSubmit(formHandler)}
-        className="flex flex-col gap-4 w-[500px]"
+        onSubmit={handleSubmit(onSubmit)}
+        className="flex flex-col gap-2 w-[500px]"
       >
-        <Inp
+        <input
           {...register("title", { required: true })}
-          disabled={isLoading}
           placeholder="Title"
           type="text"
+          className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         />
         {errors.title && (
           <span className="text-rose-500">{errors.title.message}</span>
         )}
-        <Inp
+        <input
           {...register("author", { required: true })}
-          disabled={isLoading}
           placeholder="Author Name"
           type="text"
+          className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         />
         {errors.author && (
           <span className="text-rose-500">{errors.author.message}</span>
@@ -95,19 +120,21 @@ const AddNewBook = () => {
         {errors.genre && (
           <span className="text-rose-500">{errors.genre.message}</span>
         )}
-        <Inp
+        <input
           {...register("email", { required: true })}
-          disabled={isLoading}
+          readOnly
           placeholder="Email"
           type="email"
+          defaultValue={user.email as string}
+          className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-slate-500 transition "
         />
         {errors.email && (
           <span className="text-rose-500">{errors.email.message}</span>
         )}
+
         <input
           type="submit"
           value="Create Book"
-          disabled={isLoading}
           className="w-full p-3 text-lg bg-sky-800 border-sky-800 rounded-md cursor-pointer outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         />
       </form>
