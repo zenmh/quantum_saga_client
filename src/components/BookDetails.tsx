@@ -2,6 +2,7 @@ import { useParams } from "react-router-dom";
 import { useGetBookQuery } from "../redux/features/book/bookApi";
 import format_date from "../utils/format_date";
 import { Btn, Spinner } from "./ui";
+import { useAppSelector } from "../redux/hook";
 
 interface IReview {
   email: string;
@@ -10,8 +11,10 @@ interface IReview {
 
 const BookDetails = () => {
   const { id } = useParams();
-
   const { data, isLoading } = useGetBookQuery(id);
+  const { user } = useAppSelector((state) => state.user);
+
+  console.log();
 
   const handleEdit = () => {};
 
@@ -34,8 +37,12 @@ const BookDetails = () => {
             Published : {format_date(data?.data?.createdAt)}
           </h4>
           <div className="flex flex-row items-center justify-end gap-4 mt-3">
-            <Btn onClick={handleEdit} lebel="Edit Book" primary md />
-            <Btn onClick={handleDelete} lebel="Delete Book" denger md />
+            {user.email === data.data.email && (
+              <>
+                <Btn onClick={handleEdit} lebel="Edit Book" primary md />
+                <Btn onClick={handleDelete} lebel="Delete Book" denger md />
+              </>
+            )}
           </div>
         </div>
         <div className="mt-3 rounded-md p-2 border-2 border-gray-300">
