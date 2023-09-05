@@ -4,7 +4,7 @@ import { IBook } from "../types/book";
 import format_date from "../utils/format_date";
 
 const Home = () => {
-  const { data: books, isLoading } = useGetBooksQuery(undefined);
+  const { data: books, isLoading } = useGetBooksQuery("");
 
   if (isLoading) return <Spinner />;
 
