@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "react-router-dom";
 import {
+  useAddReviewMutation,
   useDeleteBookMutation,
   useGetBookQuery,
 } from "../redux/features/book/bookApi";
@@ -7,6 +8,8 @@ import format_date from "../utils/format_date";
 import { Btn, Spinner } from "./ui";
 import { useAppSelector } from "../redux/hook";
 import { toast } from "react-toastify";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { AiOutlineSend } from "react-icons/ai";
 
 interface IReview {
   email: string;
@@ -15,11 +18,26 @@ interface IReview {
 
 const BookDetails = () => {
   const { id } = useParams();
-  const { data, isLoading: getBookIsLoading } = useGetBookQuery(id);
   const { user } = useAppSelector((state) => state.user);
   const navigate = useNavigate();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IReview>();
+  const { data, isLoading: getBookIsLoading } = useGetBookQuery(id);
   const [deleteBook, { isLoading: deleteBookIsLoading, isSuccess }] =
     useDeleteBookMutation();
+  const [addReview, { isLoading: addReviewIsLoading }] = useAddReviewMutation();
+
+  const onSubmit: SubmitHandler<IReview> = (data) => {
+    const review: IReview = {
+      email: user.email!,
+      comment: data.comment,
+    };
+
+    addReview({ id, data: review });
+  };
 
   const handleDelete = () => {
     const confirm = window.confirm("You are gonna delete this book !");
@@ -44,13 +62,12 @@ const BookDetails = () => {
     }
   };
 
-  if (getBookIsLoading) return <Spinner />;
-
-  if (deleteBookIsLoading) return <Spinner />;
+  if (getBookIsLoading || deleteBookIsLoading || addReviewIsLoading)
+    return <Spinner />;
 
   return (
     <div className="flex flex-row justify-center">
-      <div className="">
+      <div className="w-[500px]">
         <div className="border-2 border-dashed border-white p-3 rounded-md">
           <h2 className="text-2xl font-semibold">
             Title : {data?.data?.title}
@@ -78,6 +95,23 @@ const BookDetails = () => {
               )}
           </div>
         </div>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className="mt-3 flex flex-row justify-between gap-3"
+        >
+          <input
+            {...register("comment", { required: true })}
+            placeholder="Leave your comment"
+            type="text"
+            className="w-full p-2 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
+          />
+          {errors.comment && (
+            <span className="text-rose-500">{errors.comment.message}</span>
+          )}
+          <button type="submit" className="text-2xl cursor-pointer">
+            <AiOutlineSend />
+          </button>
+        </form>
         <div className="mt-3 rounded-md p-2 border-2 border-gray-300">
           <h3 className="text-xl font-bold">Reviews</h3>
           <div className="h-[1px] bg-white" />
