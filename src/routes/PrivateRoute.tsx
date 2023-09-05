@@ -9,7 +9,6 @@ interface PrivateRouteProps {
 
 const PrivateRoute: FC<PrivateRouteProps> = ({ children }) => {
   const { pathname } = useLocation();
-
   const { user, isLoading } = useAppSelector((state) => state.user);
 
   if (isLoading) return <Spinner />;

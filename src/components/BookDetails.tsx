@@ -1,8 +1,12 @@
-import { useParams } from "react-router-dom";
-import { useGetBookQuery } from "../redux/features/book/bookApi";
+import { useNavigate, useParams } from "react-router-dom";
+import {
+  useDeleteBookMutation,
+  useGetBookQuery,
+} from "../redux/features/book/bookApi";
 import format_date from "../utils/format_date";
 import { Btn, Spinner } from "./ui";
 import { useAppSelector } from "../redux/hook";
+import { toast } from "react-toastify";
 
 interface IReview {
   email: string;
@@ -11,16 +15,38 @@ interface IReview {
 
 const BookDetails = () => {
   const { id } = useParams();
-  const { data, isLoading } = useGetBookQuery(id);
+  const { data, isLoading: getBookIsLoading } = useGetBookQuery(id);
   const { user } = useAppSelector((state) => state.user);
+  const navigate = useNavigate();
+  const [deleteBook, { isLoading: deleteBookIsLoading, isSuccess }] =
+    useDeleteBookMutation();
 
-  console.log();
+  const handleDelete = () => {
+    const confirm = window.confirm("You are gonna delete this book !");
 
-  const handleEdit = () => {};
+    if (confirm) {
+      deleteBook({ id, data });
 
-  const handleDelete = () => {};
+      if (isSuccess) {
+        toast.error("Book Deleted Successfully !", {
+          position: "bottom-left",
+          autoClose: 1000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+        });
 
-  if (isLoading) return <Spinner />;
+        navigate("/");
+      }
+    }
+  };
+
+  if (getBookIsLoading) return <Spinner />;
+
+  if (deleteBookIsLoading) return <Spinner />;
 
   return (
     <div className="flex flex-row justify-center">
@@ -37,18 +63,25 @@ const BookDetails = () => {
             Published : {format_date(data?.data?.createdAt)}
           </h4>
           <div className="flex flex-row items-center justify-end gap-4 mt-3">
-            {user.email === data.data.email && (
-              <>
-                <Btn onClick={handleEdit} lebel="Edit Book" primary md />
-                <Btn onClick={handleDelete} lebel="Delete Book" denger md />
-              </>
-            )}
+            {user?.email &&
+              data?.data?.email &&
+              user?.email === data?.data?.email && (
+                <>
+                  <Btn
+                    onClick={() => navigate(`/edit_book/${id}`)}
+                    lebel="Edit Book"
+                    primary
+                    md
+                  />
+                  <Btn onClick={handleDelete} lebel="Delete Book" denger md />
+                </>
+              )}
           </div>
         </div>
         <div className="mt-3 rounded-md p-2 border-2 border-gray-300">
           <h3 className="text-xl font-bold">Reviews</h3>
           <div className="h-[1px] bg-white" />
-          {data.data.reviews &&
+          {data?.data?.reviews &&
             data?.data?.reviews.map(
               ({ email, comment }: IReview, i: number) => (
                 <div key={i} className="my-2">

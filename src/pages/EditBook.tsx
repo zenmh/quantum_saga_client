@@ -1,9 +1,12 @@
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useAppSelector } from "../redux/hook";
-import { useCreateBookMutation } from "../redux/features/book/bookApi";
+import {
+  useGetBookQuery,
+  useUpdateBookMutation,
+} from "../redux/features/book/bookApi";
 import { Spinner } from "../components/ui";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
+import { useAppSelector } from "../redux/hook";
 
 interface BookProps {
   title: string;
@@ -15,6 +18,7 @@ interface BookProps {
     email: string;
     comment: string;
   }[];
+  updated_at: string;
 }
 
 const genres: string[] = [
@@ -40,32 +44,32 @@ const genres: string[] = [
   "Travel",
 ];
 
-const AddNewBook = () => {
-  const [createBook, { isLoading, isSuccess }] = useCreateBookMutation();
-  const { user } = useAppSelector((state) => state.user);
+const EditBook = () => {
+  const { id } = useParams();
+  const [updateBook, { isLoading, isSuccess }] = useUpdateBookMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm<BookProps>();
   const navigate = useNavigate();
+  const { data } = useGetBookQuery(id);
+  const { user } = useAppSelector((state) => state.user);
 
-  const onSubmit: SubmitHandler<BookProps> = (data: BookProps) => {
+  const onSubmit: SubmitHandler<BookProps> = (form_data: BookProps) => {
     const book = {
-      title: data.title,
-      author: data.author,
-      genre: data.genre,
-      email: data.email,
-      publication_date: new Date().toISOString(),
-      reviews: [],
+      title: form_data.title,
+      author: form_data.author,
+      genre: form_data.genre,
+      email: user.email,
+      publication_date: data?.data?.publication_date,
+      reviews: data?.data?.reviews,
+      updated_at: new Date().toISOString(),
     };
-
-    createBook(book);
-
-    if (isLoading) return <Spinner />;
+    updateBook({ id, data: book });
 
     if (isSuccess) {
-      toast.success("Book Created Successfully !", {
+      toast.success("Book Updated Successfully !", {
         position: "bottom-left",
         autoClose: 1000,
         hideProgressBar: false,
@@ -92,6 +96,7 @@ const AddNewBook = () => {
           {...register("title", { required: true })}
           placeholder="Title"
           type="text"
+          defaultValue={data?.data?.title}
           className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         />
         {errors.title && (
@@ -101,6 +106,7 @@ const AddNewBook = () => {
           {...register("author", { required: true })}
           placeholder="Author Name"
           type="text"
+          defaultValue={data?.data?.author}
           className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         />
         {errors.author && (
@@ -108,6 +114,7 @@ const AddNewBook = () => {
         )}
         <select
           {...register("genre", { required: true })}
+          defaultValue={data?.data?.genre}
           className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         >
           {genres.map((genre) => (
@@ -122,21 +129,10 @@ const AddNewBook = () => {
         {errors.genre && (
           <span className="text-rose-500">{errors.genre.message}</span>
         )}
-        <input
-          {...register("email", { required: true })}
-          readOnly
-          placeholder="Email"
-          type="email"
-          defaultValue={user.email as string}
-          className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-slate-500 transition "
-        />
-        {errors.email && (
-          <span className="text-rose-500">{errors.email.message}</span>
-        )}
 
         <input
           type="submit"
-          value="Create Book"
+          value="Update"
           className="w-full p-3 text-lg bg-sky-800 border-sky-800 rounded-md cursor-pointer outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         />
       </form>
@@ -144,4 +140,4 @@ const AddNewBook = () => {
   );
 };
 
-export default AddNewBook;
+export default EditBook;

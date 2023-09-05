@@ -4,9 +4,11 @@ const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getBooks: builder.query({
       query: () => "/books",
+      providesTags: ["update_book", "create_book", "delete_book"],
     }),
     getBook: builder.query({
       query: (id) => `/books/${id}`,
+      providesTags: ["create_book", "update_book", "delete_book"],
     }),
     createBook: builder.mutation({
       query: (data) => ({
@@ -14,6 +16,7 @@ const bookApi = api.injectEndpoints({
         method: "POST",
         body: data,
       }),
+      invalidatesTags: ["create_book"],
     }),
     updateBook: builder.mutation({
       query: ({ id, data }) => ({
@@ -21,13 +24,15 @@ const bookApi = api.injectEndpoints({
         method: "PATCH",
         body: data,
       }),
+      invalidatesTags: ["update_book"],
     }),
     deleteBook: builder.mutation({
-      query: (id) => ({
+      query: ({ id, data }) => ({
         url: `/books/${id}`,
         method: "DELETE",
-        body: null,
+        body: data,
       }),
+      invalidatesTags: ["delete_book"],
     }),
   }),
 });

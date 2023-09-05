@@ -1,6 +1,14 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "../App";
-import { AddNewBook, AllBooks, Home, NotFound, SignIn, SignUp } from "../pages";
+import {
+  AddNewBook,
+  AllBooks,
+  EditBook,
+  Home,
+  NotFound,
+  SignIn,
+  SignUp,
+} from "../pages";
 import { BookDetails } from "../components";
 import PrivateRoute from "./PrivateRoute";
 
@@ -36,6 +44,10 @@ const routes = createBrowserRouter([
       {
         path: "books/:id",
         element: <BookDetails />,
+      },
+      {
+        path: "edit_book/:id",
+        element: <EditBook />,
       },
       {
         path: "*",
