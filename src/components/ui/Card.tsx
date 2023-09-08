@@ -6,7 +6,7 @@ import {
   useAddToWishlistMutation,
   useGetBookQuery,
 } from "../../redux/features/book/bookApi";
-import { Spinner } from ".";
+import { Btn, Spinner } from ".";
 import { toast } from "react-toastify";
 
 interface CardProps {
@@ -15,6 +15,7 @@ interface CardProps {
   genre: string;
   publication_date: string;
   id?: string;
+  in_wishlist?: boolean;
 }
 
 const Card: FC<CardProps> = ({
@@ -23,6 +24,7 @@ const Card: FC<CardProps> = ({
   genre,
   publication_date,
   id,
+  in_wishlist,
 }) => {
   const { user } = useAppSelector((state) => state.user);
   const [addToWishlist, { isLoading: addToWishlistIsLoading }] =
@@ -40,7 +42,11 @@ const Card: FC<CardProps> = ({
   if (addToWishlistIsLoading || getBookIsLoading) return <Spinner />;
 
   return (
-    <div className="border-gray-600 border-2 w-[230px] h-[200px] rounded-md p-2 hover:w-[231px] hover:h-[201px] transition-all flex flex-col justify-between">
+    <div
+      className={`border-gray-600 border-2 w-[330px] h-[220px] rounded-md p-2 hover:w-[331px] hover:h-[222px] transition-all flex flex-col justify-between ${
+        in_wishlist && "h-[240px] hover:h-[242px]"
+      }`}
+    >
       <h2 className="text-2xl font-bold text-slate-200">{title}</h2>
       <h3 className="text-lg font-medium text-slate-300">{author}</h3>
       <p className="text-sm text-slate-400 px-3 text-center py-1 bg-gray-600 rounded-full w-fit ">
@@ -62,6 +68,28 @@ const Card: FC<CardProps> = ({
           )}
         </button>
       </div>
+      {in_wishlist && (
+        <div className="flex flex-row justify-between items-center">
+          <Btn
+            onClick={() => toast.info("Bood Added To Read Soon !")}
+            sm
+            primary
+            lebel="Read Soon"
+          />
+          <Btn
+            onClick={() => toast.info("Bood Added To Still Reading !")}
+            sm
+            primary
+            lebel="Still Reading"
+          />
+          <Btn
+            onClick={() => toast.info("Wow I Finished A Book !")}
+            sm
+            primary
+            lebel="Finished"
+          />
+        </div>
+      )}
       <Link
         to={`/books/${id}`}
         className="bg-gray-500 font-semibold text-center py-1 rounded-full"

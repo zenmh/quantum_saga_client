@@ -32,7 +32,7 @@ const Btn: FC<BtnProps> = ({
       ${secondary && "bg-slate-500"} 
       ${denger && "bg-rose-500"}
       ${xs && "text-xs rounded-full"} 
-      ${sm && "text-sm"} 
+      ${sm && "text-sm rounded-lg"} 
       ${md && "text-lg rounded-sm"} 
       ${lg && "text-xl"}`}
     >
