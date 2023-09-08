@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 
 interface NavItemProps {
   lebel: string;
-  to?: string;
+  to: string;
   onClick?: () => void;
 }
 

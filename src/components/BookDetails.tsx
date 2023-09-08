@@ -26,7 +26,7 @@ const BookDetails = () => {
     formState: { errors },
   } = useForm<IReview>();
   const { data, isLoading: getBookIsLoading } = useGetBookQuery(id);
-  const [deleteBook, { isLoading: deleteBookIsLoading, isSuccess }] =
+  const [deleteBook, { isLoading: deleteBookIsLoading }] =
     useDeleteBookMutation();
   const [addReview, { isLoading: addReviewIsLoading }] = useAddReviewMutation();
 
@@ -44,12 +44,8 @@ const BookDetails = () => {
 
     if (confirm) {
       deleteBook({ id, data });
-
-      if (isSuccess) {
-        toast.error("Book Deleted Successfully !");
-
-        navigate("/");
-      }
+      toast.error("Book Deleted Successfully !");
+      navigate("/");
     }
   };
 

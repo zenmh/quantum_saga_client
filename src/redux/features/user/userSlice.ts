@@ -65,16 +65,7 @@ const userSlice = createSlice({
       .addCase(createUser.fulfilled, (state, action) => {
         state.isLoading = false;
         state.user.email = action.payload;
-        toast.info("Sign Up Successfully !", {
-          position: "bottom-left",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        toast.info("Sign Up Successfully !");
       })
       .addCase(createUser.rejected, (state, action) => {
         state.isError = true;
@@ -91,16 +82,7 @@ const userSlice = createSlice({
         state.isLoading = false;
         state.user.email = action.payload;
 
-        toast.info("Sign In Successfully !", {
-          position: "bottom-left",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: true,
-          draggable: true,
-          progress: undefined,
-          theme: "dark",
-        });
+        toast.info("Sign In Successfully !");
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isError = true;

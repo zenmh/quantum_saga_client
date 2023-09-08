@@ -7,56 +7,22 @@ import { Spinner } from "../components/ui";
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router-dom";
 import { useAppSelector } from "../redux/hook";
-
-interface BookProps {
-  title: string;
-  author: string;
-  genre: string;
-  email: string;
-  publication_date?: string;
-  reviews?: {
-    email: string;
-    comment: string;
-  }[];
-  updated_at: string;
-}
-
-const genres: string[] = [
-  "Select Genre",
-  "Action",
-  "Adventure",
-  "Biography",
-  "Children's",
-  "Comics",
-  "Cookbooks",
-  "Crime",
-  "Drama",
-  "Fantasy",
-  "Fiction",
-  "History",
-  "Horror",
-  "Mystery",
-  "Poetry",
-  "Romance",
-  "Science Fiction",
-  "Self-help",
-  "Thriller",
-  "Travel",
-];
+import { book_genres } from "../constants/book";
+import { IBook } from "../types/book";
 
 const EditBook = () => {
   const { id } = useParams();
-  const [updateBook, { isLoading, isSuccess }] = useUpdateBookMutation();
+  const [updateBook, { isLoading }] = useUpdateBookMutation();
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<BookProps>();
+  } = useForm<IBook>();
   const navigate = useNavigate();
   const { data } = useGetBookQuery(id);
   const { user } = useAppSelector((state) => state.user);
 
-  const onSubmit: SubmitHandler<BookProps> = (form_data: BookProps) => {
+  const onSubmit: SubmitHandler<IBook> = (form_data: IBook) => {
     const book = {
       title: form_data.title,
       author: form_data.author,
@@ -68,20 +34,9 @@ const EditBook = () => {
     };
     updateBook({ id, data: book });
 
-    if (isSuccess) {
-      toast.success("Book Updated Successfully !", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+    toast.success("Book Updated Successfully !");
 
-      navigate("/");
-    }
+    navigate("/");
   };
 
   if (isLoading) return <Spinner />;
@@ -117,7 +72,7 @@ const EditBook = () => {
           defaultValue={data?.data?.genre}
           className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {genres.map((genre) => (
+          {book_genres.map((genre) => (
             <option
               key={genre}
               className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"

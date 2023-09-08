@@ -35,7 +35,6 @@ const Card: FC<CardProps> = ({
     const wishlist: string[] = [...data.data.wishlist, user.email];
 
     addToWishlist({ id, data: wishlist });
-
     toast.success("Bood Added To Wishlist !");
   };
 
@@ -48,7 +47,10 @@ const Card: FC<CardProps> = ({
       }`}
     >
       <h2 className="text-2xl font-bold text-slate-200">{title}</h2>
-      <h3 className="text-lg font-medium text-slate-300">{author}</h3>
+      <h3 className="text-lg font-medium text-slate-300">
+        <span className="mr-2 font-normal text-sm">by</span>
+        {author}
+      </h3>
       <p className="text-sm text-slate-400 px-3 text-center py-1 bg-gray-600 rounded-full w-fit ">
         {genre}
       </p>
@@ -71,19 +73,19 @@ const Card: FC<CardProps> = ({
       {in_wishlist && (
         <div className="flex flex-row justify-between items-center">
           <Btn
-            onClick={() => toast.info("Bood Added To Read Soon !")}
+            onClick={() => toast.info("I'll Implement It later !")}
             sm
             primary
             lebel="Read Soon"
           />
           <Btn
-            onClick={() => toast.info("Bood Added To Still Reading !")}
+            onClick={() => toast.info("I'll Implement It later !")}
             sm
             primary
             lebel="Still Reading"
           />
           <Btn
-            onClick={() => toast.info("Wow I Finished A Book !")}
+            onClick={() => toast.info("I'll Implement It later !")}
             sm
             primary
             lebel="Finished"

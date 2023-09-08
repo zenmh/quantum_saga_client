@@ -19,7 +19,7 @@ interface BookProps {
 }
 
 const AddNewBook = () => {
-  const [createBook, { isLoading, isSuccess }] = useCreateBookMutation();
+  const [createBook, { isLoading }] = useCreateBookMutation();
   const { user } = useAppSelector((state) => state.user);
   const {
     register,
@@ -40,22 +40,9 @@ const AddNewBook = () => {
 
     createBook(book);
 
-    if (isLoading) return <Spinner />;
+    toast.success("Book Created Successfully !");
 
-    if (isSuccess) {
-      toast.success("Book Created Successfully !", {
-        position: "bottom-left",
-        autoClose: 1000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
-
-      navigate("/");
-    }
+    navigate("/");
   };
 
   if (isLoading) return <Spinner />;
