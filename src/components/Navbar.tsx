@@ -41,6 +41,7 @@ const Navbar = () => {
       <ul className="flex flex-row gap-6">
         <NavItem lebel="All Books" to="/all_books" />
         <NavItem lebel="Add New Book" to="/add_new_book" />
+        <NavItem lebel="Wishlist" to="/wishlist" />
         {!user.email && (
           <>
             <NavItem lebel="Sign In" to="/sign_in" />

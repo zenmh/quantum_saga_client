@@ -4,11 +4,33 @@ const bookApi = api.injectEndpoints({
   endpoints: (builder) => ({
     getBooks: builder.query({
       query: (searchTerm) => `/books?searchTerm=${searchTerm}`,
-      providesTags: ["update_book", "create_book", "delete_book", "add_review"],
+      providesTags: [
+        "update_book",
+        "create_book",
+        "delete_book",
+        "add_review",
+        "add_to_wishlist",
+      ],
+    }),
+    getBooksWithSelectedGenre: builder.query({
+      query: (genre) => `/books?genre=${genre}`,
+      providesTags: [
+        "update_book",
+        "create_book",
+        "delete_book",
+        "add_review",
+        "add_to_wishlist",
+      ],
     }),
     getBook: builder.query({
       query: (id) => `/books/${id}`,
-      providesTags: ["create_book", "update_book", "delete_book", "add_review"],
+      providesTags: [
+        "create_book",
+        "update_book",
+        "delete_book",
+        "add_review",
+        "add_to_wishlist",
+      ],
     }),
     createBook: builder.mutation({
       query: (data) => ({
@@ -42,16 +64,26 @@ const bookApi = api.injectEndpoints({
       }),
       invalidatesTags: ["add_review"],
     }),
+    addToWishlist: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/add_to_wishlist/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["add_to_wishlist"],
+    }),
   }),
 });
 
 export const {
   useGetBooksQuery,
+  useGetBooksWithSelectedGenreQuery,
   useGetBookQuery,
   useCreateBookMutation,
   useUpdateBookMutation,
   useDeleteBookMutation,
   useAddReviewMutation,
+  useAddToWishlistMutation,
 } = bookApi;
 
 export default bookApi;

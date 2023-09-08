@@ -8,6 +8,7 @@ import {
   NotFound,
   SignIn,
   SignUp,
+  Wishlist,
 } from "../pages";
 import { BookDetails } from "../components";
 import PrivateRoute from "./PrivateRoute";
@@ -38,6 +39,14 @@ const routes = createBrowserRouter([
         element: (
           <PrivateRoute>
             <AddNewBook />
+          </PrivateRoute>
+        ),
+      },
+      {
+        path: "wishlist",
+        element: (
+          <PrivateRoute>
+            <Wishlist />
           </PrivateRoute>
         ),
       },

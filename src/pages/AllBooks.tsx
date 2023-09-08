@@ -1,23 +1,37 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { useState } from "react";
+import { useState, ChangeEvent, FormEvent } from "react";
 import { Card, Spinner } from "../components/ui";
-import { useGetBooksQuery } from "../redux/features/book/bookApi";
+import {
+  useGetBooksQuery,
+  useGetBooksWithSelectedGenreQuery,
+} from "../redux/features/book/bookApi";
 import { IBook } from "../types/book";
 import format_date from "../utils/format_date";
 import { AiOutlineSearch } from "react-icons/ai";
+import { book_genres } from "../constants/book";
 
 const AllBooks = () => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  // const [filterValue, setFilterValue] = useState<string>('*')
-  const { data: books, isLoading } = useGetBooksQuery(searchTerm);
+  const [genre, setGenre] = useState<string>("*");
+  const [filterOn, setFilterOn] = useState<boolean>(false);
+  const { data: allBooks, isLoading: allBooksIsLaoding } =
+    useGetBooksQuery(searchTerm);
+  const { data: booksFilterdByGenre, isLoading: booksFilterdByGenreIsLoading } =
+    useGetBooksWithSelectedGenreQuery(genre);
+  const books = filterOn ? booksFilterdByGenre : allBooks;
 
-  const handleSearch = (event: any) => {
-    event.preventDefault();
+  const handleSearch = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    setSearchTerm(event.target.search.value as string);
+    const form_element = e.target as HTMLFormElement;
+    setSearchTerm(form_element.search.value as string);
   };
 
-  if (isLoading) return <Spinner />;
+  const handleFilter = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFilterOn(true);
+    setGenre(e.target.value);
+  };
+
+  if (allBooksIsLaoding || booksFilterdByGenreIsLoading) return <Spinner />;
 
   return (
     <div>
@@ -30,7 +44,7 @@ const AllBooks = () => {
             name="search"
             placeholder="Search"
             type="text"
-            className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-sm outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
+            className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-sm outline-none text-white transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
           />
           <button
             type="submit"
@@ -39,7 +53,22 @@ const AllBooks = () => {
             <AiOutlineSearch />
           </button>
         </form>
-        <div></div>
+        <div>
+          <select
+            onChange={handleFilter}
+            value={genre}
+            className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
+          >
+            {book_genres.map((genre) => (
+              <option
+                key={genre}
+                className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {genre}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
       <div className="flex flex-row flex-wrap gap-6 items-start ml-4">
         {books.data.length ? (

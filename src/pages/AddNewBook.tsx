@@ -4,6 +4,7 @@ import { useCreateBookMutation } from "../redux/features/book/bookApi";
 import { Spinner } from "../components/ui";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { book_genres } from "../constants/book";
 
 interface BookProps {
   title: string;
@@ -16,29 +17,6 @@ interface BookProps {
     comment: string;
   }[];
 }
-
-const genres: string[] = [
-  "Select Genre",
-  "Action",
-  "Adventure",
-  "Biography",
-  "Children's",
-  "Comics",
-  "Cookbooks",
-  "Crime",
-  "Drama",
-  "Fantasy",
-  "Fiction",
-  "History",
-  "Horror",
-  "Mystery",
-  "Poetry",
-  "Romance",
-  "Science Fiction",
-  "Self-help",
-  "Thriller",
-  "Travel",
-];
 
 const AddNewBook = () => {
   const [createBook, { isLoading, isSuccess }] = useCreateBookMutation();
@@ -110,7 +88,7 @@ const AddNewBook = () => {
           {...register("genre", { required: true })}
           className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
         >
-          {genres.map((genre) => (
+          {book_genres.map((genre) => (
             <option
               key={genre}
               className="w-full p-3 text-lg bg-gray-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed"
