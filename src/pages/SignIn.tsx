@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../redux/hook";
+import { useAppDispatch } from "../redux/hook";
 import { loginUser } from "../redux/features/user/userSlice";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Spinner } from "../components/ui";
 
 interface SignInFromInputs {
   email: string;
@@ -17,9 +18,7 @@ const SignIn = () => {
   } = useForm<SignInFromInputs>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
-  const { user } = useAppSelector((state) => state.user);
+
   const navigate = useNavigate();
 
   const onSubmit: SubmitHandler<SignInFromInputs> = (
@@ -29,10 +28,12 @@ const SignIn = () => {
 
     dispatch(loginUser({ email: data.email, password: data.password }));
 
+    navigate("/");
+
     setIsLoading(false);
   };
 
-  if (user) navigate(from, { replace: true });
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="flex flex-row justify-center">
@@ -64,7 +65,7 @@ const SignIn = () => {
           type="submit"
           value="Sign In"
           disabled={isLoading}
-          className="w-full p-3 text-xl bg-sky-800 border-sky-800 rounded-md cursor-pointer outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
+          className="w-full p-3 text-xl bg-sky-700 hover:bg-sky-800 border-sky-800 rounded-md cursor-pointer outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
         />
         <p className="text-center font-normal">
           You are new here?

@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { useAppDispatch, useAppSelector } from "../redux/hook";
+import { useAppDispatch } from "../redux/hook";
 import { createUser } from "../redux/features/user/userSlice";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { Spinner } from "../components/ui";
 
 interface SignUpFormInputs {
   name: string;
@@ -18,10 +19,7 @@ const SignUp = () => {
   } = useForm<SignUpFormInputs>();
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const dispatch = useAppDispatch();
-  const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
   const navigate = useNavigate();
-  const { user } = useAppSelector((state) => state.user);
 
   const onSubmit: SubmitHandler<SignUpFormInputs> = (
     data: SignUpFormInputs
@@ -30,10 +28,12 @@ const SignUp = () => {
 
     dispatch(createUser({ email: data.email, password: data.password }));
 
+    navigate("/");
+
     setIsLoading(false);
   };
 
-  if (user) navigate(from, { replace: true });
+  if (isLoading) return <Spinner />;
 
   return (
     <div className="flex flex-row justify-center">
@@ -74,7 +74,7 @@ const SignUp = () => {
           type="submit"
           value="Sign Up"
           disabled={isLoading}
-          className="w-full p-3 cursor-pointer text-xl bg-sky-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
+          className="w-full p-3 cursor-pointer text-xl bg-sky-700 border-sky-800 rounded-md outline-none text-white focus:border-2 transition hover:bg-sky-800 disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
         />
         <p className="text-center font-normal">
           I already have an account!

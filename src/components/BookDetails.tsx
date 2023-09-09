@@ -23,6 +23,7 @@ const BookDetails = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm<IReview>();
   const { data, isLoading: getBookIsLoading } = useGetBookQuery(id);
@@ -37,6 +38,8 @@ const BookDetails = () => {
     };
 
     addReview({ id, data: review });
+
+    reset();
   };
 
   const handleDelete = () => {

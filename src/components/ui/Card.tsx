@@ -117,7 +117,7 @@ const Card: FC<CardProps> = ({
       </p>
       <div className="flex flex-row justify-between items-center">
         <p className="font-normal">
-          Published :{" "}
+          Published :&nbsp;
           <span className="italic text-gray-400">{publication_date}</span>
         </p>
         {user.email && (
