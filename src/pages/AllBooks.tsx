@@ -34,8 +34,8 @@ const AllBooks = () => {
   if (allBooksIsLaoding || booksFilterdByGenreIsLoading) return <Spinner />;
 
   return (
-    <div>
-      <div className="flex flex-row justify-between">
+    <div className=" mx-4">
+      <div className="flex flex-row justify-between mb-3">
         <form
           onSubmit={handleSearch}
           className="w-1/2 flex felx-row items-center"
@@ -70,7 +70,7 @@ const AllBooks = () => {
           </select>
         </div>
       </div>
-      <div className="flex flex-row flex-wrap gap-6 items-start ml-4">
+      <div className="flex flex-row flex-wrap gap-6 items-start">
         {books.data.length ? (
           books.data.map((book: IBook, i: number) => (
             <Card

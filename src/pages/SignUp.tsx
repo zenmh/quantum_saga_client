@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useAppDispatch, useAppSelector } from "../redux/hook";
 import { createUser } from "../redux/features/user/userSlice";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 interface SignUpFormInputs {
   name: string;
@@ -76,6 +76,15 @@ const SignUp = () => {
           disabled={isLoading}
           className="w-full p-3 cursor-pointer text-xl bg-sky-800 border-sky-800 rounded-md outline-none text-white focus:border-2 transition disabled:bg-neutral-900 disabled:opacity-70 disabled:cursor-not-allowed font-bold"
         />
+        <p className="text-center font-normal">
+          I already have an account!
+          <Link
+            to="/sign_in"
+            className="text-blue-400 underline hover:text-blue-500 ml-2"
+          >
+            Sign In
+          </Link>
+        </p>
       </form>
     </div>
   );

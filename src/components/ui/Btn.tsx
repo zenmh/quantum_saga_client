@@ -28,7 +28,7 @@ const Btn: FC<BtnProps> = ({
       onClick={onClick}
       className={`text-white 
       cursor-pointer px-2 font-semibold 
-      ${primary && "bg-sky-500"}
+      ${primary && "bg-sky-500 hover:bg-sky-600"}
       ${secondary && "bg-slate-500"} 
       ${denger && "bg-rose-500"}
       ${xs && "text-xs rounded-full"} 

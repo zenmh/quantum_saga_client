@@ -10,6 +10,10 @@ const bookApi = api.injectEndpoints({
         "delete_book",
         "add_review",
         "add_to_wishlist",
+        "remove_from_wishlist",
+        "add_to_read_soon",
+        "add_to_currently_reading",
+        "add_to_finished",
       ],
     }),
     getBooksWithSelectedGenre: builder.query({
@@ -20,6 +24,10 @@ const bookApi = api.injectEndpoints({
         "delete_book",
         "add_review",
         "add_to_wishlist",
+        "remove_from_wishlist",
+        "add_to_read_soon",
+        "add_to_currently_reading",
+        "add_to_finished",
       ],
     }),
     getBook: builder.query({
@@ -30,6 +38,10 @@ const bookApi = api.injectEndpoints({
         "delete_book",
         "add_review",
         "add_to_wishlist",
+        "remove_from_wishlist",
+        "add_to_read_soon",
+        "add_to_currently_reading",
+        "add_to_finished",
       ],
     }),
     createBook: builder.mutation({
@@ -72,6 +84,38 @@ const bookApi = api.injectEndpoints({
       }),
       invalidatesTags: ["add_to_wishlist"],
     }),
+    removeFromWishlist: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/remove_from_wishlist/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["remove_from_wishlist"],
+    }),
+    addToReadSoon: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/add_to_read_soon/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["add_to_read_soon"],
+    }),
+    addToCurrentlyReading: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/add_to_currently_reading/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["add_to_currently_reading"],
+    }),
+    addToFinished: builder.mutation({
+      query: ({ id, data }) => ({
+        url: `/books/add_to_finished/${id}`,
+        method: "PATCH",
+        body: data,
+      }),
+      invalidatesTags: ["add_to_finished"],
+    }),
   }),
 });
 
@@ -84,6 +128,10 @@ export const {
   useDeleteBookMutation,
   useAddReviewMutation,
   useAddToWishlistMutation,
+  useRemoveFromWishlistMutation,
+  useAddToReadSoonMutation,
+  useAddToCurrentlyReadingMutation,
+  useAddToFinishedMutation,
 } = bookApi;
 
 export default bookApi;

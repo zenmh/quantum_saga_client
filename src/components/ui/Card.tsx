@@ -3,8 +3,12 @@ import { Link } from "react-router-dom";
 import { AiFillHeart, AiOutlineHeart } from "react-icons/ai";
 import { useAppSelector } from "../../redux/hook";
 import {
+  useAddToCurrentlyReadingMutation,
+  useAddToFinishedMutation,
+  useAddToReadSoonMutation,
   useAddToWishlistMutation,
   useGetBookQuery,
+  useRemoveFromWishlistMutation,
 } from "../../redux/features/book/bookApi";
 import { Btn, Spinner } from ".";
 import { toast } from "react-toastify";
@@ -30,15 +34,72 @@ const Card: FC<CardProps> = ({
   const [addToWishlist, { isLoading: addToWishlistIsLoading }] =
     useAddToWishlistMutation();
   const { data, isLoading: getBookIsLoading } = useGetBookQuery(id);
+  const [removeFromWishlist, { isLoading: removeFromWishlistIsLoading }] =
+    useRemoveFromWishlistMutation();
+  const [addToReadSoon, { isLoading: addToReadSoonIsLoading }] =
+    useAddToReadSoonMutation();
+  const [addToCurrentlyReading, { isLoading: addToCurrentlyReadingIsLoading }] =
+    useAddToCurrentlyReadingMutation();
+  const [addToFinished, { isLoading: addToFinishedIsLoading }] =
+    useAddToFinishedMutation();
 
   const handleWishlist = () => {
     const wishlist: string[] = [...data.data.wishlist, user.email];
 
-    addToWishlist({ id, data: wishlist });
-    toast.success("Bood Added To Wishlist !");
+    if (!data.data.wishlist.includes(user.email)) {
+      addToWishlist({ id, data: wishlist });
+      toast.success("Book Added To Wishlist !");
+    } else {
+      removeFromWishlist({ id, data: { email: user.email } });
+      toast.info("Book Removed From Wishlist !");
+    }
   };
 
-  if (addToWishlistIsLoading || getBookIsLoading) return <Spinner />;
+  const handleReadSoon = () => {
+    const read_soon: string[] = [...data.data.read_soon, user.email];
+
+    if (!data.data.read_soon.includes(user.email)) {
+      addToReadSoon({ id, data: read_soon });
+      toast.info("Marked as read soon !");
+    } else {
+      toast.warning("Already marked as read soon !!");
+    }
+  };
+
+  const handleCurrentlyReading = () => {
+    const currently_reading: string[] = [
+      ...data.data.currently_reading,
+      user.email,
+    ];
+
+    if (!data.data.currently_reading.includes(user.email)) {
+      addToCurrentlyReading({ id, data: currently_reading });
+      toast.info("Marked as still reading !");
+    } else {
+      toast.warning("Already marked as still reading !!");
+    }
+  };
+
+  const handleFinished = () => {
+    const finished: string[] = [...data.data.finished, user.email];
+
+    if (!data.data.finished.includes(user.email)) {
+      addToFinished({ id, data: finished });
+      toast.info("Marked as finished !");
+    } else {
+      toast.warning("Already marked as finished !!");
+    }
+  };
+
+  if (
+    addToWishlistIsLoading ||
+    getBookIsLoading ||
+    removeFromWishlistIsLoading ||
+    addToReadSoonIsLoading ||
+    addToCurrentlyReadingIsLoading ||
+    addToFinishedIsLoading
+  )
+    return <Spinner />;
 
   return (
     <div
@@ -59,37 +120,35 @@ const Card: FC<CardProps> = ({
           Published :{" "}
           <span className="italic text-gray-400">{publication_date}</span>
         </p>
-        <button
-          onClick={handleWishlist}
-          className="cursor-pointer text-2xl p-1"
-        >
-          {data?.data?.wishlist.includes(user.email) ? (
-            <AiFillHeart />
-          ) : (
-            <AiOutlineHeart />
-          )}
-        </button>
+        {user.email && (
+          <button
+            onClick={handleWishlist}
+            className="cursor-pointer text-2xl p-1"
+          >
+            {data?.data?.wishlist.includes(user.email) ? (
+              <AiFillHeart />
+            ) : (
+              <AiOutlineHeart />
+            )}
+          </button>
+        )}
       </div>
       {in_wishlist && (
-        <div className="flex flex-row justify-between items-center">
-          <Btn
-            onClick={() => toast.info("I'll Implement It later !")}
-            sm
-            primary
-            lebel="Read Soon"
-          />
-          <Btn
-            onClick={() => toast.info("I'll Implement It later !")}
-            sm
-            primary
-            lebel="Still Reading"
-          />
-          <Btn
-            onClick={() => toast.info("I'll Implement It later !")}
-            sm
-            primary
-            lebel="Finished"
-          />
+        <div className="flex flex-row justify-around items-center">
+          {!data.data.read_soon.includes(user.email) && (
+            <Btn onClick={handleReadSoon} sm primary lebel="Read Soon" />
+          )}
+          {!data.data.currently_reading.includes(user.email) && (
+            <Btn
+              onClick={handleCurrentlyReading}
+              sm
+              primary
+              lebel="Still Reading"
+            />
+          )}
+          {!data.data.finished.includes(user.email) && (
+            <Btn onClick={handleFinished} sm primary lebel="Finished" />
+          )}
         </div>
       )}
       <Link
